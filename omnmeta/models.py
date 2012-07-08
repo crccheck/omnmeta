@@ -9,12 +9,11 @@ class Base(object):
     def __tablename__(cls):
         return cls.__name__.lower()
 
-    @declared_attr
-    def __repr__(cls):
-        if hasattr(cls, '__unicode__'):
-            return cls.__unicode__()
+    def __repr__(self):
+        if hasattr(self, '__unicode__'):
+            return self.__unicode__()
         else:
-            return cls.__name__
+            return "<%s Object>" % self.__class__.__name__
 
 
 Base = declarative_base(cls=Base)
@@ -23,3 +22,6 @@ Base = declarative_base(cls=Base)
 class SomeFile(Base):
     path = Column(String(300), nullable=False, unique=True)
     hash = Column(String(16))  # md5sum
+
+    def __unicode__(self):
+        return self.path
