@@ -1,22 +1,14 @@
-#! /usr/bin/env python
 # loads models into a REPL like ipython
 
-import os
-import sys
-
-# cheat to make imports work without needed to change path,
-paths = [
-    os.path.join(os.path.dirname(__file__), '..', '..'),
-]
-sys.path = paths + sys.path
-del paths
-
-from omnmeta import settings
-from omnmeta.models import *
+from _fixpath import *
 
 from sqlalchemy import create_engine
-engine = create_engine(settings.DB, echo=True)
-
 from sqlalchemy.orm import sessionmaker
+
+from omnmeta import settings
+
+engine = create_engine(settings.DB, echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
+
+from omnmeta.models import *
