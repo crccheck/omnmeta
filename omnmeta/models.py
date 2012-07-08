@@ -21,5 +21,5 @@ Base = declarative_base(cls=Base)
 
 
 class File(Base):
-    path = Column(String(300), nullable=False)
+    path = Column(String(300), nullable=False, unique=True)
     hash = Column(String(16))  # md5sum
