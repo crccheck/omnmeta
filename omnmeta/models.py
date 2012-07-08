@@ -20,6 +20,6 @@ class Base(object):
 Base = declarative_base(cls=Base)
 
 
-class File(Base):
+class SomeFile(Base):
     path = Column(String(300), nullable=False, unique=True)
     hash = Column(String(16))  # md5sum

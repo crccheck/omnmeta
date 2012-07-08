@@ -5,29 +5,29 @@ from sqlalchemy.exc import IntegrityError
 
 from omnmeta import settings
 
-from ..models import File
+from ..models import SomeFile
 
 
-class TestFileModel:
+class TestSomeFileModel:
     def setUp(self):
         print settings.DB
-        engine = create_engine(settings.DB, echo=True)
+        engine = create_engine(settings.DB, echo=False)
         Session = sessionmaker(bind=engine)
         session = Session()
-        session.query(File).delete()
+        session.query(SomeFile).delete()
         self.session = session
 
     def test_can_add(self):
-        assert self.session.query(File).count() == 0
-        f = File(path='/path/to/some/file')
+        assert self.session.query(SomeFile).count() == 0
+        f = SomeFile(path='/path/to/some/file')
         self.session.add(f)
         self.session.commit()
-        assert self.session.query(File).count() == 1
+        assert self.session.query(SomeFile).count() == 1
 
     @raises(IntegrityError)
     def test_make_sure_path_is_unique(self):
-        f = File(path='/path/to/some/file')
+        f = SomeFile(path='/path/to/some/file')
         self.session.add(f)
-        f = File(path='/path/to/some/file')
+        f = SomeFile(path='/path/to/some/file')
         self.session.add(f)
         self.session.commit()
