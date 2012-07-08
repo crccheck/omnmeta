@@ -1,5 +1,7 @@
+*.pyc
+
 *.sublime-project
 *.sublime-workspace
-*.pyc
+.codeintel
 env/
 build/
