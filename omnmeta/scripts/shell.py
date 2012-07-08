@@ -11,7 +11,7 @@ paths = [
 sys.path = paths + sys.path
 del paths
 
-from videx.models import *
+from omnmeta.models import *
 
 from sqlalchemy import create_engine
 engine = create_engine('sqlite:///:memory:', echo=True)

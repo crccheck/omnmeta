@@ -2,7 +2,7 @@ import sys
 
 from PyQt4 import QtGui
 
-APP_TITLE = 'videx'
+APP_TITLE = 'omnmeta'
 
 
 class AppWindow(QtGui.QWidget):
