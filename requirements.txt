@@ -2,3 +2,5 @@
 # yourself from http://www.riverbankcomputing.co.uk/software/pyqt/download/
 
 SQLAlchemy>=0.7.0
+
+nose
