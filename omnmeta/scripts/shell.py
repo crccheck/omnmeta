@@ -11,10 +11,12 @@ paths = [
 sys.path = paths + sys.path
 del paths
 
+from omnmeta import settings
 from omnmeta.models import *
 
 from sqlalchemy import create_engine
-engine = create_engine('sqlite:///:memory:', echo=True)
+engine = create_engine(settings.DB, echo=True)
 
 from sqlalchemy.orm import sessionmaker
 Session = sessionmaker(bind=engine)
+session = Session()

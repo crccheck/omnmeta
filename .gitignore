@@ -1,4 +1,5 @@
 *.pyc
+*.sqlite
 
 *.sublime-project
 *.sublime-workspace
