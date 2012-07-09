@@ -7,6 +7,13 @@ from . import library
 APP_TITLE = 'omnmeta'
 
 
+class ListWidget(QtGui.QListWidget):
+    def __init__(self, *args, **kwargs):
+        super(ListWidget, self).__init__(*args, **kwargs)
+        for f in library.get():
+            self.addItem("%s" % f)
+
+
 class AppWindow(QtGui.QWidget):
     def __init__(self, *args, **kwargs):
         super(AppWindow, self).__init__(*args, **kwargs)
@@ -25,7 +32,7 @@ class AppWindow(QtGui.QWidget):
             for link in links:
                 obj, created = library.add(link)
                 if created:
-                    self.main_list.addItem(str(obj))
+                    self.main_widget.addItem(str(obj))
                 # from pdb4qt import set_trace; set_trace()
             evt.accept()
         else:
@@ -40,11 +47,9 @@ class AppWindow(QtGui.QWidget):
         self.show()
 
     def init_main_list(self):
-        file_list = QtGui.QListWidget()
-        for f in library.get():
-            file_list.addItem("%s" % f)
-        self.main_list = file_list
-        return file_list
+        main_widget = ListWidget()
+        self.main_widget = main_widget
+        return main_widget
 
 
 def main():
