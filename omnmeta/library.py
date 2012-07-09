@@ -1,3 +1,4 @@
+# TODO add tests, too lazy to do it now since this is dependent on having files
 import os
 
 from sqlalchemy import create_engine
@@ -12,12 +13,22 @@ engine = create_engine(settings.DB, echo=False)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-def add_file_to_library(path):
+
+def add(path):
     # from pdb4qt import set_trace; set_trace()
     path = str(path)
     f = SomeFile(path=path)
     try:
         instance = session.query(SomeFile).filter_by(path=path).one()
+        return instance, False
     except NoResultFound:
         session.add(f)
         session.commit()
+        return f, True
+
+
+def get(filter_args=None):
+    # TODO filter
+    instance = session.query(SomeFile).all()
+    return instance
+    # from pdb4qt import set_trace; set_trace()

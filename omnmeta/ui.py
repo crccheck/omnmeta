@@ -2,9 +2,16 @@ import sys
 
 from PyQt4 import QtGui
 
-from .library import add_file_to_library
+from . import library
 
 APP_TITLE = 'omnmeta'
+
+
+class ListWidget(QtGui.QListWidget):
+    def __init__(self, *args, **kwargs):
+        super(ListWidget, self).__init__(*args, **kwargs)
+        for f in library.get():
+            self.addItem("%s" % f)
 
 
 class AppWindow(QtGui.QWidget):
@@ -23,14 +30,26 @@ class AppWindow(QtGui.QWidget):
         if evt.mimeData().hasUrls:
             links = [x.toLocalFile() for x in evt.mimeData().urls()]
             for link in links:
-                add_file_to_library(link)
+                obj, created = library.add(link)
+                if created:
+                    self.main_widget.addItem(str(obj))
+                # from pdb4qt import set_trace; set_trace()
             evt.accept()
         else:
             evt.ignore()
 
     def initUI(self):
+        hbox = QtGui.QHBoxLayout(self)
+        w = self.init_main_list()
+        hbox.addWidget(w)
+        self.setLayout(hbox)
         self.setWindowTitle(APP_TITLE)
         self.show()
+
+    def init_main_list(self):
+        main_widget = ListWidget()
+        self.main_widget = main_widget
+        return main_widget
 
 
 def main():
