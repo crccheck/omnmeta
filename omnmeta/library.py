@@ -20,6 +20,14 @@ def add(path):
     f = SomeFile(path=path)
     try:
         instance = session.query(SomeFile).filter_by(path=path).one()
+        return instance
     except NoResultFound:
         session.add(f)
         session.commit()
+
+
+def get(filter_args=None):
+    # TODO filter
+    instance = session.query(SomeFile).all()
+    return instance
+    # from pdb4qt import set_trace; set_trace()
