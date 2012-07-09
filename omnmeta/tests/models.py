@@ -31,3 +31,15 @@ class TestSomeFileModel:
         f = SomeFile(path='/path/to/some/file')
         self.session.add(f)
         self.session.commit()
+
+    def test_name_is_guessed(self):
+        f = SomeFile(path='/path/hello.dolly')
+        self.session.add(f)
+        self.session.commit()
+        assert f.name == 'hello'
+
+    def test_set_name_isnt_overwritten(self):
+        f = SomeFile(path='/path/hello.dolly', name='bye')
+        self.session.add(f)
+        self.session.commit()
+        assert f.name == 'bye'

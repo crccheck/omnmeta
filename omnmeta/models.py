@@ -1,5 +1,8 @@
+import os
+
 from sqlalchemy.ext.declarative import declared_attr, declarative_base
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm.interfaces import MapperExtension
 
 
 class Base(object):
@@ -25,6 +28,12 @@ class Base(object):
 Base = declarative_base(cls=Base)
 
 
+class SomeFileExtension(MapperExtension):
+    def before_insert(self, mapper, connection, instance):
+        if instance.name is None and instance.path:
+            instance.name = os.path.splitext(os.path.basename(instance.path))[0]
+
+
 class SomeFile(Base):
     """
     The basic unit. Represents a file located on disk.
@@ -36,6 +45,8 @@ class SomeFile(Base):
     name = Column(String())
     path = Column(String(300), nullable=False, unique=True)
     hash = Column(String(16))  # md5sum
+
+    __mapper_args__ = {'extension': SomeFileExtension()}
 
     def __unicode__(self):
         return self.path
