@@ -2,7 +2,7 @@ import sys
 
 from PyQt4 import QtGui
 
-from .library import add_file_to_library
+from . import library
 
 APP_TITLE = 'omnmeta'
 
@@ -23,7 +23,7 @@ class AppWindow(QtGui.QWidget):
         if evt.mimeData().hasUrls:
             links = [x.toLocalFile() for x in evt.mimeData().urls()]
             for link in links:
-                add_file_to_library(link)
+                library.add(link)
             evt.accept()
         else:
             evt.ignore()
