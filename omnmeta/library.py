@@ -20,10 +20,11 @@ def add(path):
     f = SomeFile(path=path)
     try:
         instance = session.query(SomeFile).filter_by(path=path).one()
-        return instance
+        return instance, False
     except NoResultFound:
         session.add(f)
         session.commit()
+        return f, True
 
 
 def get(filter_args=None):

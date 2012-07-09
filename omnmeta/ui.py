@@ -23,20 +23,28 @@ class AppWindow(QtGui.QWidget):
         if evt.mimeData().hasUrls:
             links = [x.toLocalFile() for x in evt.mimeData().urls()]
             for link in links:
-                library.add(link)
+                obj, created = library.add(link)
+                if created:
+                    self.main_list.addItem(str(obj))
+                # from pdb4qt import set_trace; set_trace()
             evt.accept()
         else:
             evt.ignore()
 
     def initUI(self):
         hbox = QtGui.QHBoxLayout(self)
-        file_list = QtGui.QListWidget()
-        for f in library.get():
-            file_list.addItem("%s" % f)
-        hbox.addWidget(file_list)
+        w = self.init_main_list()
+        hbox.addWidget(w)
         self.setLayout(hbox)
         self.setWindowTitle(APP_TITLE)
         self.show()
+
+    def init_main_list(self):
+        file_list = QtGui.QListWidget()
+        for f in library.get():
+            file_list.addItem("%s" % f)
+        self.main_list = file_list
+        return file_list
 
 
 def main():
