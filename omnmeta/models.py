@@ -33,6 +33,7 @@ class SomeFile(Base):
     md5sum of the file contents used to check the uniqueness of the file.
 
     """
+    name = Column(String())
     path = Column(String(300), nullable=False, unique=True)
     hash = Column(String(16))  # md5sum
 
