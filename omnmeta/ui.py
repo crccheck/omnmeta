@@ -29,6 +29,12 @@ class AppWindow(QtGui.QWidget):
             evt.ignore()
 
     def initUI(self):
+        hbox = QtGui.QHBoxLayout(self)
+        file_list = QtGui.QListWidget()
+        for i in range(10):
+            file_list.addItem("Test %s" % i)
+        hbox.addWidget(file_list)
+        self.setLayout(hbox)
         self.setWindowTitle(APP_TITLE)
         self.show()
 
