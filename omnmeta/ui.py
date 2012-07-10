@@ -5,21 +5,30 @@ from . import library
 APP_TITLE = 'omnmeta'
 
 
-class ListWidget(QtGui.QListWidget):
+class FileView(QtGui.QTableWidget):
     def __init__(self, *args, **kwargs):
-        super(ListWidget, self).__init__(*args, **kwargs)
-        for f in library.get():
-            self.addItem(f)
+        super(FileView, self).__init__(*args, **kwargs)
+        self.setColumnCount(2)
+        for idx, f in enumerate(library.get()):
+            # TODO merge functionality with self.addItem()
+            self.insertRow(idx)
+            self.setItem(idx, 0, QtGui.QTableWidgetItem(f.name))
+            self.setItem(idx, 1, QtGui.QTableWidgetItem(f.path))
+        self.horizontalHeader().setStretchLastSection(True)
+        self.verticalHeader().hide()
 
     def addItem(self, obj):
-        super(ListWidget, self).addItem("{0.name} - {0.path}".format(obj))
+        idx = self.rowCount()
+        self.insertRow(idx)
+        self.setItem(idx, 0, QtGui.QTableWidgetItem(obj.name))
+        self.setItem(idx, 1, QtGui.QTableWidgetItem(obj.path))
 
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
 
-        self.main_widget = ListWidget()
+        self.main_widget = FileView()
         self.setCentralWidget(self.main_widget)
         self.createMenus()
         self.setAcceptDrops(True)
