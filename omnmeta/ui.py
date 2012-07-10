@@ -1,5 +1,3 @@
-import sys
-
 from PySide import QtGui
 
 from . import library
@@ -17,11 +15,14 @@ class ListWidget(QtGui.QListWidget):
         super(ListWidget, self).addItem("{0.name} - {0.path}".format(obj))
 
 
-class AppWindow(QtGui.QWidget):
-    def __init__(self, *args, **kwargs):
-        super(AppWindow, self).__init__(*args, **kwargs)
+class MainWindow(QtGui.QMainWindow):
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+
+        self.main_widget = ListWidget()
+        self.setCentralWidget(self.main_widget)
         self.setAcceptDrops(True)
-        self.initUI()
+        self.setWindowTitle(APP_TITLE)
 
     def dragEnterEvent(self, evt):
         if evt.mimeData().hasUrls:
@@ -41,22 +42,10 @@ class AppWindow(QtGui.QWidget):
         else:
             evt.ignore()
 
-    def initUI(self):
-        hbox = QtGui.QHBoxLayout(self)
-        w = self.init_main_list()
-        hbox.addWidget(w)
-        self.setLayout(hbox)
-        self.setWindowTitle(APP_TITLE)
-        self.show()
-
-    def init_main_list(self):
-        main_widget = ListWidget()
-        self.main_widget = main_widget
-        return main_widget
-
 
 def main():
+    import sys
     app = QtGui.QApplication(sys.argv)
-    app_window = AppWindow()
-    print app_window
+    mw = MainWindow()
+    mw.show()
     sys.exit(app.exec_())
