@@ -1,7 +1,9 @@
-# pyqt4 is not pip installable, install the latest binary or build the source
-# yourself from http://www.riverbankcomputing.co.uk/software/pyqt/download/
-
+# core
+# Please read the installation instructions for PySide http://qt-project.org/downloads
+# It isn't pip installable, extra steps are needed
+# PySide
 SQLAlchemy>=0.7.0
 
+# for development
 nose
 pdb4qt
