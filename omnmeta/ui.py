@@ -21,6 +21,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.main_widget = ListWidget()
         self.setCentralWidget(self.main_widget)
+        self.createMenus()
         self.setAcceptDrops(True)
         self.setWindowTitle(APP_TITLE)
 
@@ -41,6 +42,23 @@ class MainWindow(QtGui.QMainWindow):
             evt.accept()
         else:
             evt.ignore()
+
+    def createMenus(self):
+        # Create the main menuBar menu items
+        fileMenu = self.menuBar().addMenu("&File")
+
+        # Populate the File menu
+        # fileMenu.addSeparator()
+        self.createAction("E&xit", fileMenu, self.close)
+
+    def createAction(self, text, menu, slot):
+        """ Helper function to save typing when populating menus
+            with action.
+        """
+        action = QtGui.QAction(text, self)
+        menu.addAction(action)
+        action.triggered.connect(slot)
+        return action
 
 
 def main():
