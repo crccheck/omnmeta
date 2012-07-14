@@ -1,5 +1,3 @@
-import sys
-
 from PySide import QtGui
 
 from . import library
@@ -7,21 +5,36 @@ from . import library
 APP_TITLE = 'omnmeta'
 
 
-class ListWidget(QtGui.QListWidget):
+class FileView(QtGui.QTableWidget):
+    list_display = ('name', 'path')
+
     def __init__(self, *args, **kwargs):
-        super(ListWidget, self).__init__(*args, **kwargs)
+        super(FileView, self).__init__(*args, **kwargs)
+        self.setColumnCount(len(self.list_display))
         for f in library.get():
             self.addItem(f)
+        self.horizontalHeader().setStretchLastSection(True)
+        self.verticalHeader().hide()
+        self.setHorizontalHeaderLabels(self.list_display)
+        self.setSortingEnabled(True)
 
     def addItem(self, obj):
-        super(ListWidget, self).addItem("{0.name} - {0.path}".format(obj))
+        idx = self.rowCount()
+        self.insertRow(idx)
+        for col_i, label in enumerate(self.list_display):
+            self.setItem(idx, col_i, QtGui.QTableWidgetItem(getattr(obj, label)))
 
 
-class AppWindow(QtGui.QWidget):
-    def __init__(self, *args, **kwargs):
-        super(AppWindow, self).__init__(*args, **kwargs)
+class MainWindow(QtGui.QMainWindow):
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+
+        self.main_widget = FileView()
+        self.setCentralWidget(self.main_widget)
+        self.createMenus()
         self.setAcceptDrops(True)
-        self.initUI()
+        self.setWindowTitle(APP_TITLE)
+        self.resize(640, 480)
 
     def dragEnterEvent(self, evt):
         if evt.mimeData().hasUrls:
@@ -41,22 +54,27 @@ class AppWindow(QtGui.QWidget):
         else:
             evt.ignore()
 
-    def initUI(self):
-        hbox = QtGui.QHBoxLayout(self)
-        w = self.init_main_list()
-        hbox.addWidget(w)
-        self.setLayout(hbox)
-        self.setWindowTitle(APP_TITLE)
-        self.show()
+    def createMenus(self):
+        # Create the main menuBar menu items
+        fileMenu = self.menuBar().addMenu("&File")
 
-    def init_main_list(self):
-        main_widget = ListWidget()
-        self.main_widget = main_widget
-        return main_widget
+        # Populate the File menu
+        # fileMenu.addSeparator()
+        self.createAction("E&xit", fileMenu, self.close)
+
+    def createAction(self, text, menu, slot):
+        """ Helper function to save typing when populating menus
+            with action.
+        """
+        action = QtGui.QAction(text, self)
+        menu.addAction(action)
+        action.triggered.connect(slot)
+        return action
 
 
 def main():
+    import sys
     app = QtGui.QApplication(sys.argv)
-    app_window = AppWindow()
-    print app_window
+    mw = MainWindow()
+    mw.show()
     sys.exit(app.exec_())
