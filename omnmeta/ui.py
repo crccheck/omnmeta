@@ -6,6 +6,8 @@ APP_TITLE = 'omnmeta'
 
 
 class FileView(QtGui.QTableWidget):
+    list_display = ('name', 'path')
+
     def __init__(self, *args, **kwargs):
         super(FileView, self).__init__(*args, **kwargs)
         self.setColumnCount(2)
@@ -16,12 +18,13 @@ class FileView(QtGui.QTableWidget):
             self.setItem(idx, 1, QtGui.QTableWidgetItem(f.path))
         self.horizontalHeader().setStretchLastSection(True)
         self.verticalHeader().hide()
+        self.setHorizontalHeaderLabels(self.list_display)
 
     def addItem(self, obj):
         idx = self.rowCount()
         self.insertRow(idx)
-        self.setItem(idx, 0, QtGui.QTableWidgetItem(obj.name))
-        self.setItem(idx, 1, QtGui.QTableWidgetItem(obj.path))
+        for col_i, label in enumerate(self.list_display):
+            self.setItem(idx, col_i, QtGui.QTableWidgetItem(getattr(obj, label)))
 
 
 class MainWindow(QtGui.QMainWindow):
