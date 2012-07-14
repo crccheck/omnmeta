@@ -17,6 +17,7 @@ class FileView(QtGui.QTableWidget):
         self.verticalHeader().hide()
         self.setHorizontalHeaderLabels(self.list_display)
         self.setSortingEnabled(True)
+        self.setSelectionBehavior(QtGui.QAbstractItemView.SelectionBehavior.SelectRows)
 
     def addItem(self, obj):
         idx = self.rowCount()
