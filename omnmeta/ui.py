@@ -33,6 +33,7 @@ class MainWindow(QtGui.QMainWindow):
         self.createMenus()
         self.setAcceptDrops(True)
         self.setWindowTitle(APP_TITLE)
+        self.resize(640, 480)
 
     def dragEnterEvent(self, evt):
         if evt.mimeData().hasUrls:
