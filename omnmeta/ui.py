@@ -19,6 +19,7 @@ class FileView(QtGui.QTableWidget):
         self.horizontalHeader().setStretchLastSection(True)
         self.verticalHeader().hide()
         self.setHorizontalHeaderLabels(self.list_display)
+        self.setSortingEnabled(True)
 
     def addItem(self, obj):
         idx = self.rowCount()
