@@ -10,12 +10,9 @@ class FileView(QtGui.QTableWidget):
 
     def __init__(self, *args, **kwargs):
         super(FileView, self).__init__(*args, **kwargs)
-        self.setColumnCount(2)
-        for idx, f in enumerate(library.get()):
-            # TODO merge functionality with self.addItem()
-            self.insertRow(idx)
-            self.setItem(idx, 0, QtGui.QTableWidgetItem(f.name))
-            self.setItem(idx, 1, QtGui.QTableWidgetItem(f.path))
+        self.setColumnCount(len(self.list_display))
+        for f in library.get():
+            self.addItem(f)
         self.horizontalHeader().setStretchLastSection(True)
         self.verticalHeader().hide()
         self.setHorizontalHeaderLabels(self.list_display)
