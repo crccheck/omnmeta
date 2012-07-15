@@ -33,6 +33,7 @@ class MainWindow(QtGui.QMainWindow):
         self.main_widget = FileView()
         self.setCentralWidget(self.main_widget)
         self.createMenus()
+        self.createToolbars()
         self.setAcceptDrops(True)
         self.setWindowTitle(APP_TITLE)
         self.resize(640, 480)
@@ -62,6 +63,15 @@ class MainWindow(QtGui.QMainWindow):
         # Populate the File menu
         # fileMenu.addSeparator()
         self.createAction("E&xit", fileMenu, self.close)
+
+    def createToolbars(self):
+        exitAction = QtGui.QAction('Rescan MD5', self)
+        # exitAction = QtGui.QAction(QtGui.QIcon('exit24.png'), 'Exit', self)
+        # exitAction.setShortcut('Ctrl+R')
+        exitAction.triggered.connect(library.update_hashes)
+
+        self.toolbar = self.addToolBar('Exit')
+        self.toolbar.addAction(exitAction)
 
     def createAction(self, text, menu, slot):
         """ Helper function to save typing when populating menus

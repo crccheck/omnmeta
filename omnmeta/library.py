@@ -32,3 +32,7 @@ def get(filter_args=None):
     instance = session.query(SomeFile).all()
     return instance
     # from pdb4qt import set_trace; set_trace()
+
+
+def update_hashes(*args, **kwargs):
+    print args, kwargs
