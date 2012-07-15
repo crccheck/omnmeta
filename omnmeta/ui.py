@@ -11,7 +11,7 @@ class FileView(QtGui.QTableWidget):
     def __init__(self, *args, **kwargs):
         super(FileView, self).__init__(*args, **kwargs)
         self.setColumnCount(len(self.list_display))
-        self.horizontalHeader().setStretchLastSection(True)
+        # self.horizontalHeader().setStretchLastSection(True)
         self.verticalHeader().hide()
         self.setHorizontalHeaderLabels(self.list_display)
         self.setSortingEnabled(True)
@@ -31,6 +31,7 @@ class FileView(QtGui.QTableWidget):
         self.setRowCount(0)  # not sure why clearContents doesn't also do this
         for f in library.get():
             self.addItem(f)
+        self.resizeColumnsToContents()
 
 
 class MainWindow(QtGui.QMainWindow):
