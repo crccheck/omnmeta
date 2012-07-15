@@ -6,7 +6,7 @@ APP_TITLE = 'omnmeta'
 
 
 class FileView(QtGui.QTableWidget):
-    list_display = ('name', 'path')
+    list_display = ('name', 'path', 'hash')
 
     def __init__(self, *args, **kwargs):
         super(FileView, self).__init__(*args, **kwargs)

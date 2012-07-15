@@ -1,4 +1,5 @@
 # TODO add tests, too lazy to do it now since this is dependent on having files
+import hashlib
 import os
 
 from sqlalchemy import create_engine
@@ -35,4 +36,18 @@ def get(filter_args=None):
 
 
 def update_hashes(*args, **kwargs):
-    print args, kwargs
+    instance = session.query(SomeFile).filter_by(hash=None)
+    for f in instance:
+        f.hash = md5_for_file(f.path)
+        session.commit()
+
+
+def md5_for_file(path, block_size=2 ** 20):
+    md5 = hashlib.md5()
+    with open(path, 'rb') as f:
+        while True:
+            data = f.read(block_size)
+            if not data:
+                break
+            md5.update(data)
+    return md5.hexdigest()
