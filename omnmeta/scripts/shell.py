@@ -12,3 +12,5 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 from omnmeta.models import *
+
+print "\nsession and models loaded"
