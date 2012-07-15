@@ -6,4 +6,3 @@ SQLAlchemy>=0.7.0
 
 # for development
 nose
-pdb4qt
