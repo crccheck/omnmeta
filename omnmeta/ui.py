@@ -11,19 +11,26 @@ class FileView(QtGui.QTableWidget):
     def __init__(self, *args, **kwargs):
         super(FileView, self).__init__(*args, **kwargs)
         self.setColumnCount(len(self.list_display))
-        for f in library.get():
-            self.addItem(f)
         self.horizontalHeader().setStretchLastSection(True)
         self.verticalHeader().hide()
         self.setHorizontalHeaderLabels(self.list_display)
         self.setSortingEnabled(True)
         self.setSelectionBehavior(QtGui.QAbstractItemView.SelectionBehavior.SelectRows)
+        self.resetDisplay()
 
     def addItem(self, obj):
         idx = self.rowCount()
         self.insertRow(idx)
         for col_i, label in enumerate(self.list_display):
             self.setItem(idx, col_i, QtGui.QTableWidgetItem(getattr(obj, label)))
+
+    def resetDisplay(self):
+        """ clear all rows and reload data """
+        # FIXME conflicts with sorting
+        self.clearContents()
+        self.setRowCount(0)  # not sure why clearContents doesn't also do this
+        for f in library.get():
+            self.addItem(f)
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -67,11 +74,15 @@ class MainWindow(QtGui.QMainWindow):
     def createToolbars(self):
         exitAction = QtGui.QAction('Rescan MD5', self)
         # exitAction = QtGui.QAction(QtGui.QIcon('exit24.png'), 'Exit', self)
-        # exitAction.setShortcut('Ctrl+R')
         exitAction.triggered.connect(library.update_hashes)
+
+        reloadAction = QtGui.QAction('Reload', self)
+        exitAction.setShortcut('Ctrl+R')
+        reloadAction.triggered.connect(self.main_widget.resetDisplay)
 
         self.toolbar = self.addToolBar('Exit')
         self.toolbar.addAction(exitAction)
+        self.toolbar.addAction(reloadAction)
 
     def createAction(self, text, menu, slot):
         """ Helper function to save typing when populating menus
