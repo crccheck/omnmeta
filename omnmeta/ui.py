@@ -68,6 +68,9 @@ class FileModel(QAbstractTableModel):
         self.insertRows(row_idx)
         self.setItem(row_idx, obj)
 
+    def clearContents(self):
+        self.removeRows(0, self.rowCount())
+
 
 class FileView(QtGui.QTableView):
     def __init__(self, *args, **kwargs):
@@ -85,8 +88,7 @@ class FileView(QtGui.QTableView):
     def resetDisplay(self):
         """ clear all rows and reload data """
         # FIXME conflicts with sorting
-        # self.clearContents()
-        # self.setRowCount(0)  # not sure why clearContents doesn't also do this
+        self.model.clearContents()
         for f in library.get():
             self.addItem(f)
         self.resizeColumnsToContents()
