@@ -62,6 +62,12 @@ class FileModel(QAbstractTableModel):
             ix = self.index(position, col_idx)
             self.setData(ix, getattr(obj, label))
 
+    def insertItem(self, obj):
+        """ appends the `obj` to rows """
+        row_idx = self.rowCount()
+        self.insertRows(row_idx)
+        self.setItem(row_idx, obj)
+
 
 class FileView(QtGui.QTableView):
     def __init__(self, *args, **kwargs):
@@ -74,9 +80,7 @@ class FileView(QtGui.QTableView):
         self.resetDisplay()
 
     def addItem(self, obj):
-        row_idx = 0
-        self.model.insertRows(row_idx)
-        self.model.setItem(row_idx, obj)
+        self.model.insertItem(obj)
 
     def resetDisplay(self):
         """ clear all rows and reload data """
