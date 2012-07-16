@@ -45,41 +45,49 @@ class FileModel(QAbstractTableModel):
     def insertRows(self, position, rows=1, index=QModelIndex()):
         self.beginInsertRows(QModelIndex(), position, position + rows - 1)
         for row in range(rows):
-            self.addresses.insert(position + row, {})
+            self.items.insert(position + row, {})
         self.endInsertRows()
         return True
 
     def removeRows(self, position, rows=1, index=QModelIndex()):
         self.beginRemoveRows(QModelIndex(), position, position + rows - 1)
-        del self.addresses[position:position + rows]
+        del self.items[position:position + rows]
         self.endRemoveRows()
         return True
 
 
-class FileView(QtGui.QTableWidget):
+class FileView(QtGui.QTableView):
     list_display = ('name', 'path', 'hash')
 
     def __init__(self, *args, **kwargs):
         super(FileView, self).__init__(*args, **kwargs)
-        self.setColumnCount(len(self.list_display))
+        self.model = FileModel()
+        self.setModel(self.model)
+        # self.setColumnCount(len(self.list_display))
         # self.horizontalHeader().setStretchLastSection(True)
         self.verticalHeader().hide()
-        self.setHorizontalHeaderLabels(self.list_display)
+        # self.setHorizontalHeaderLabels(self.list_display)
         self.setSortingEnabled(True)
         self.setSelectionBehavior(QtGui.QAbstractItemView.SelectionBehavior.SelectRows)
         self.resetDisplay()
 
     def addItem(self, obj):
-        idx = self.rowCount()
-        self.insertRow(idx)
-        for col_i, label in enumerate(self.list_display):
-            self.setItem(idx, col_i, QtGui.QTableWidgetItem(getattr(obj, label)))
+        # idx = self.rowCount()
+        # self.insertRow(idx)
+        # for col_i, label in enumerate(self.list_display):
+        #     self.setItem(idx, col_i, QtGui.QTableWidgetItem(getattr(obj, label)))
+
+        row_idx = 0
+        self.model.insertRows(row_idx)
+        for col_idx, label in enumerate(self.list_display):
+            ix = self.model.index(row_idx, col_idx)
+            self.model.setData(ix, getattr(obj, label))
 
     def resetDisplay(self):
         """ clear all rows and reload data """
         # FIXME conflicts with sorting
-        self.clearContents()
-        self.setRowCount(0)  # not sure why clearContents doesn't also do this
+        # self.clearContents()
+        # self.setRowCount(0)  # not sure why clearContents doesn't also do this
         for f in library.get():
             self.addItem(f)
         self.resizeColumnsToContents()
