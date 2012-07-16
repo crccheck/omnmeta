@@ -1,8 +1,59 @@
+from PySide.QtCore import (Qt, QAbstractTableModel, QModelIndex)
 from PySide import QtGui
 
 from . import library
 
 APP_TITLE = 'omnmeta'
+
+
+class FileModel(QAbstractTableModel):
+    items = []
+    list_display = ('name', 'path', 'hash')
+
+    def rowCount(self, index=QModelIndex()):
+        return len(self.items)
+
+    def columnCount(self, index=QModelIndex()):
+        return len(self.list_display)
+
+    def data(self, index, role=Qt.DisplayRole):
+        if not index.isValid():
+            return None
+        if not 0 <= index.row() < len(self.items):
+            return None
+        if role == Qt.DisplayRole:
+            item = self.items[index.row()]
+            return item.get(self.list_display[index.column()])
+        return None
+
+    def setData(self, index, value, role=Qt.EditRole):
+        if role != Qt.EditRole:
+            return False
+        if index.isValid and 0 <= index.row() < len(self.items):
+            item = self.items[index.row()]
+            item[self.list_display[index.column()]] = value
+        self.dataChanged.emit(index, index)
+        return True
+
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if role != Qt.DisplayRole:
+            return None
+        if orientation == Qt.Horizontal:
+            return self.list_display[section]
+        return None
+
+    def insertRows(self, position, rows=1, index=QModelIndex()):
+        self.beginInsertRows(QModelIndex(), position, position + rows - 1)
+        for row in range(rows):
+            self.addresses.insert(position + row, {})
+        self.endInsertRows()
+        return True
+
+    def removeRows(self, position, rows=1, index=QModelIndex()):
+        self.beginRemoveRows(QModelIndex(), position, position + rows - 1)
+        del self.addresses[position:position + rows]
+        self.endRemoveRows()
+        return True
 
 
 class FileView(QtGui.QTableWidget):
