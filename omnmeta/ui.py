@@ -8,7 +8,12 @@ APP_TITLE = 'omnmeta'
 
 class FileModel(QAbstractTableModel):
     items = []
+    queryset = None
     list_display = ('name', 'path', 'hash')
+
+    def __init__(self, queryset, *args, **kwargs):
+        super(FileModel, self).__init__(*args, **kwargs)
+        self.queryset = queryset
 
     def rowCount(self, index=QModelIndex()):
         return len(self.items)
@@ -75,7 +80,7 @@ class FileModel(QAbstractTableModel):
 class FileView(QtGui.QTableView):
     def __init__(self, *args, **kwargs):
         super(FileView, self).__init__(*args, **kwargs)
-        self.model = FileModel()
+        self.model = FileModel(queryset=library.get())
         self.setModel(self.model)
         self.verticalHeader().hide()
         self.setSortingEnabled(True)
@@ -89,8 +94,8 @@ class FileView(QtGui.QTableView):
         """ clear all rows and reload data """
         # FIXME conflicts with sorting
         self.model.clearContents()
-        for f in library.get():
-            self.addItem(f)
+        for f in self.model.queryset:
+            self.model.insertItem(f)
         self.resizeColumnsToContents()
 
 
