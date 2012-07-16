@@ -55,33 +55,28 @@ class FileModel(QAbstractTableModel):
         self.endRemoveRows()
         return True
 
+    # custom methods
+    def setItem(self, position, obj):
+        """ set item in `position` to correspond to `obj` object """
+        for col_idx, label in enumerate(self.list_display):
+            ix = self.index(position, col_idx)
+            self.setData(ix, getattr(obj, label))
+
 
 class FileView(QtGui.QTableView):
-    list_display = ('name', 'path', 'hash')
-
     def __init__(self, *args, **kwargs):
         super(FileView, self).__init__(*args, **kwargs)
         self.model = FileModel()
         self.setModel(self.model)
-        # self.setColumnCount(len(self.list_display))
-        # self.horizontalHeader().setStretchLastSection(True)
         self.verticalHeader().hide()
-        # self.setHorizontalHeaderLabels(self.list_display)
         self.setSortingEnabled(True)
         self.setSelectionBehavior(QtGui.QAbstractItemView.SelectionBehavior.SelectRows)
         self.resetDisplay()
 
     def addItem(self, obj):
-        # idx = self.rowCount()
-        # self.insertRow(idx)
-        # for col_i, label in enumerate(self.list_display):
-        #     self.setItem(idx, col_i, QtGui.QTableWidgetItem(getattr(obj, label)))
-
         row_idx = 0
         self.model.insertRows(row_idx)
-        for col_idx, label in enumerate(self.list_display):
-            ix = self.model.index(row_idx, col_idx)
-            self.model.setData(ix, getattr(obj, label))
+        self.model.setItem(row_idx, obj)
 
     def resetDisplay(self):
         """ clear all rows and reload data """
