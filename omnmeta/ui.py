@@ -7,7 +7,6 @@ APP_TITLE = 'omnmeta'
 
 
 class FileModel(QAbstractTableModel):
-    items = []
     queryset = None
     list_display = ('name', 'path', 'hash')
 
@@ -16,7 +15,7 @@ class FileModel(QAbstractTableModel):
         self.queryset = queryset
 
     def rowCount(self, index=QModelIndex()):
-        return len(self.items)
+        return len(self.queryset)
 
     def columnCount(self, index=QModelIndex()):
         return len(self.list_display)
@@ -24,19 +23,19 @@ class FileModel(QAbstractTableModel):
     def data(self, index, role=Qt.DisplayRole):
         if not index.isValid():
             return None
-        if not 0 <= index.row() < len(self.items):
+        if not 0 <= index.row() < self.rowCount():
             return None
         if role == Qt.DisplayRole:
-            item = self.items[index.row()]
-            return item.get(self.list_display[index.column()])
+            obj = self.queryset[index.row()]
+            return getattr(obj, self.list_display[index.column()])
         return None
 
     def setData(self, index, value, role=Qt.EditRole):
         if role != Qt.EditRole:
             return False
-        if index.isValid and 0 <= index.row() < len(self.items):
-            item = self.items[index.row()]
-            item[self.list_display[index.column()]] = value
+        # if index.isValid and 0 <= index.row() < self.rowCount():
+        #     obj = self.queryset[index.row()]
+        #     setattr(obj, self.list_display[index.column()], value)
         self.dataChanged.emit(index, index)
         return True
 
@@ -49,32 +48,32 @@ class FileModel(QAbstractTableModel):
 
     def insertRows(self, position, rows=1, index=QModelIndex()):
         self.beginInsertRows(QModelIndex(), position, position + rows - 1)
-        for row in range(rows):
-            self.items.insert(position + row, {})
+        # for row in range(rows):
+        #     self.items.insert(position + row, {})
         self.endInsertRows()
         return True
 
     def removeRows(self, position, rows=1, index=QModelIndex()):
         self.beginRemoveRows(QModelIndex(), position, position + rows - 1)
-        del self.items[position:position + rows]
+        # del self.items[position:position + rows]
         self.endRemoveRows()
         return True
 
     # custom methods
-    def setItem(self, position, obj):
-        """ set item in `position` to correspond to `obj` object """
-        for col_idx, label in enumerate(self.list_display):
-            ix = self.index(position, col_idx)
-            self.setData(ix, getattr(obj, label))
+    # def setItem(self, position, obj):
+    #     """ set item in `position` to correspond to `obj` object """
+    #     for col_idx, label in enumerate(self.list_display):
+    #         ix = self.index(position, col_idx)
+    #         self.setData(ix, getattr(obj, label))
 
-    def insertItem(self, obj):
-        """ appends the `obj` to rows """
-        row_idx = self.rowCount()
-        self.insertRows(row_idx)
-        self.setItem(row_idx, obj)
+    # def insertItem(self, obj):
+    #     """ appends the `obj` to rows """
+    #     row_idx = self.rowCount()
+    #     self.insertRows(row_idx)
+    #     self.setItem(row_idx, obj)
 
-    def clearContents(self):
-        self.removeRows(0, self.rowCount())
+    # def clearContents(self):
+    #     self.removeRows(0, self.rowCount())
 
 
 class FileView(QtGui.QTableView):
@@ -93,9 +92,9 @@ class FileView(QtGui.QTableView):
     def resetDisplay(self):
         """ clear all rows and reload data """
         # FIXME conflicts with sorting
-        self.model.clearContents()
-        for f in self.model.queryset:
-            self.model.insertItem(f)
+        # self.model.clearContents()
+        # for f in self.model.queryset:
+        #     self.model.insertItem(f)
         self.resizeColumnsToContents()
 
 
